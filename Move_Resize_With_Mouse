@@ -1,0 +1,48 @@
+Opt("MouseCoordMode", 0)
+
+Local $bOn = False
+Local $aCur[2]
+Local $aOld[2]
+Local $aWin[4]
+
+While True
+
+	$aCur = MouseGetPos()
+
+;	Debug
+;	$aWin = WinGetPos("Untitled")
+;	ConsoleWrite("Window Position:" & $aWin[0] & "," & $aWin[1] & @CRLF)
+;	ConsoleWrite("Cursor Position:" & $aCur[0] & "," & $aCur[1] & @CRLF)
+;	Sleep(333)
+
+	While MouseGetCursor() = 9
+
+		; Skip initial mouse move when context menu item selected
+		If Not $bOn Then
+			$bOn = Not $bOn
+			Sleep(500)
+			ContinueLoop
+		EndIf
+
+		$aCur = $aOld
+		$aCur = MouseGetPos()
+
+		$aWin = WinGetPos("[ACTIVE]")
+
+;		Debug
+;		ConsoleWrite("Window Position:" & $aWin[0] & "," & $aWin[1] & @TAB & $aWin[2] & "x" & $aWin[3] & @CRLF)
+;		ConsoleWrite("Cursor Position:" & $aCur[0] & "," & $aCur[1] & @CRLF)
+
+;		When Resizing: Windows moves the Cursor to (Window Width/2), (Window Height/2) within the Window
+		If $aCur[0] = Floor($aWin[2]/2) Then
+			;;;
+		Else
+;			When Moving: Windows Moves the Cursor to Window X Pos + (Window Width /2), Window Y Pos + 14
+			WinMove("[ACTIVE]", "", $aWin[0] + ($aCur[0] - $aOld[0]) - Floor($aWin[2]/2), $aWin[1] + ($aCur[1] - $aOld[1]) - 14)
+		EndIf
+
+	WEnd
+
+	$bOn = False
+
+WEnd
